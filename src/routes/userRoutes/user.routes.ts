@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../../controllers/userController';
+import {
+  createUser,
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+} from '../../controllers/userController';
 
 const router = Router();
 
@@ -11,4 +17,3 @@ router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 
 export default router;
-

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { connectionDB } from '../../controllers/indexControllers';
+import userRoutes from '../userRoutes/user.routes';
 
 const router = Router();
-router.get('/', connectionDB);
+router.get('/', userRoutes);
 
 export default router;

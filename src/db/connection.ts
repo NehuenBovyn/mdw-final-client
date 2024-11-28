@@ -1,7 +1,12 @@
-const mongoose = require('mongoose');
-import dotenv from 'dotenv';
-dotenv.config();
+const { config } = require('dotenv');
 
-const uri = process.env.MONGODB_URI;
-//Puede que el uri sea diferente, dependiendo de la configuración de tu base de datos.
-module.exports = ()=> mongoose.connect(uri);
+config();
+
+module.exports = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  db_port: process.env.DB_PORT,
+  database: process.env.DB_DATABASE,
+  secret: process.env.DB_SECRET_KEY,
+};

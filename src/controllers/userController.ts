@@ -1,19 +1,22 @@
 import { Request, Response } from 'express';
-import * as userService from '../services/userService';
+const pool = require('../services/dbService');
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await userService.getAllUsers();
-    console.log('HOLAAAAAA');
-    res.json(users);
+    const result = await pool.query(`SELECT * FROM "Users"`);
+    res.json(result.rows);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Error al recuperar usuarios' });
   }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await userService.getUserById(req.params.id);
+    const result = await pool.query(`SELECT * FROM "Users" WHERE id = $1`, [
+      req.params.id,
+    ]);
+    const user = result.rows[0];
     if (user) {
       res.json(user);
     } else {
@@ -26,7 +29,12 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const newUser = await userService.createUser(req.body);
+    const { name, email } = req.body;
+    const result = await pool.query(
+      `INSERT INTO "Users" (name, email) VALUES ($1, $2) RETURNING *`,
+      [name, email]
+    );
+    const newUser = result.rows[0];
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ message: 'Error al crear usuario' });
@@ -35,7 +43,12 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const updatedUser = await userService.updateUser(req.params.id, req.body);
+    const { name, email } = req.body;
+    const result = await pool.query(
+      `UPDATE "Users" SET name = $1, email = $2 WHERE id = $3 RETURNING *`,
+      [name, email, req.params.id]
+    );
+    const updatedUser = result.rows[0];
     if (updatedUser) {
       res.json(updatedUser);
     } else {
@@ -48,8 +61,12 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const result = await userService.deleteUser(req.params.id);
-    if (result) {
+    const result = await pool.query(
+      `DELETE FROM "Users" WHERE id = $1 RETURNING *`,
+      [req.params.id]
+    );
+    const deletedUser = result.rows[0];
+    if (deletedUser) {
       res.status(204).end(); // Sin contenido
     } else {
       res.status(404).json({ message: 'Usuario no encontrado' });

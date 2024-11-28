@@ -1,10 +1,17 @@
-const connection = require('../db/connection');
+const { Pool } = require('pg');
+const db = require('../db/connection');
 
-export const connectToDatabase = async (): Promise<void> => {
-  try {
-    await connection();
-    console.log('Conexión exitosa a la base de datos');
-  } catch (error) {
-    console.log('Error al conectar a la base de datos', error);
-  }
-};
+const pool = new Pool({
+  user: db.user,
+  password: db.password,
+  host: db.host,
+  port: db.db_port,
+  database: db.database,
+});
+
+pool
+  .connect()
+  .then(() => console.log('Conexión exitosa a PostgreSQL'))
+  .catch((err: any) => console.error('Error al conectar pepepe:', err.message));
+
+module.exports = pool;
