@@ -3,7 +3,7 @@ const pool = require('../services/dbService');
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(`SELECT * FROM "Users"`);
+    const result = await pool.query(`SELECT * FROM "users"`);
     res.json(result.rows);
   } catch (error) {
     console.log(error);
@@ -13,9 +13,10 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(`SELECT * FROM "Users" WHERE id = $1`, [
-      req.params.id,
-    ]);
+    const result = await pool.query(
+      `SELECT * FROM "users" WHERE firebase_id = $1`,
+      [req.params.id]
+    );
     const user = result.rows[0];
     if (user) {
       res.json(user);
@@ -29,14 +30,13 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, email } = req.body;
-    const result = await pool.query(
-      `INSERT INTO "Users" (name, email) VALUES ($1, $2) RETURNING *`,
-      [name, email]
-    );
-    const newUser = result.rows[0];
-    res.status(201).json(newUser);
+    const { firebase_id, name, email, phone } = req.body;
+    const query = `INSERT INTO "users" (firebase_id, name, email, phone) VALUES ($1, $2, $3, $4)`;
+    const result = await pool.query(query, [firebase_id, name, email, phone]);
+    const newUser = result;
+    res.status(201).json({ message: newUser });
   } catch (error) {
+    console.log(error, 'error');
     res.status(500).json({ message: 'Error al crear usuario' });
   }
 };
@@ -45,7 +45,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const { name, email } = req.body;
     const result = await pool.query(
-      `UPDATE "Users" SET name = $1, email = $2 WHERE id = $3 RETURNING *`,
+      `UPDATE "users" SET name = $1, email = $2 WHERE id = $3 RETURNING *`,
       [name, email, req.params.id]
     );
     const updatedUser = result.rows[0];
@@ -62,7 +62,7 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `DELETE FROM "Users" WHERE id = $1 RETURNING *`,
+      `DELETE FROM "users" WHERE id = $1 RETURNING *`,
       [req.params.id]
     );
     const deletedUser = result.rows[0];
