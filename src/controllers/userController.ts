@@ -43,11 +43,12 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, phone } = req.body;
     const result = await pool.query(
-      `UPDATE "users" SET name = $1, email = $2 WHERE id = $3 RETURNING *`,
-      [name, email, req.params.id]
+      `UPDATE "users" SET name = $1, email = $2, phone = $3 WHERE firebase_id = $4 RETURNING *`,
+      [name, email, phone, req.params.id]
     );
+
     const updatedUser = result.rows[0];
     if (updatedUser) {
       res.json(updatedUser);
