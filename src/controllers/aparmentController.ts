@@ -97,7 +97,7 @@ export const updateAparment = async (req: Request, res: Response) => {
 export const deleteAparment = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `DELETE FROM "apartments" WHERE firebase_id = $1 RETURNING *`,
+      `DELETE FROM "apartments" WHERE id_apartment = $1 RETURNING *`,
       [req.params.id]
     );
     const deletedAparment = result.rows[0];
