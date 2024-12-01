@@ -4,6 +4,7 @@ import {
   deleteAparment,
   getAllAparments,
   getAparmentById,
+  getAparmentByUser,
   updateAparment,
 } from '../../controllers/aparmentController';
 
@@ -15,5 +16,6 @@ router.get('/', getAllAparments);
 router.get('/:id', getAparmentById);
 router.put('/:id', updateAparment);
 router.delete('/:id', deleteAparment);
+router.get('/myaparments/:id', getAparmentByUser);
 
 export default router;

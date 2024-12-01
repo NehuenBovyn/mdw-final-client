@@ -3,7 +3,7 @@ const pool = require('../services/dbService');
 
 export const getAllAparments = async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(`SELECT * FROM "aparments"`);
+    const result = await pool.query(`SELECT * FROM "apartments"`);
     res.json(result.rows);
   } catch (error) {
     console.log(error);
@@ -14,12 +14,12 @@ export const getAllAparments = async (req: Request, res: Response) => {
 export const getAparmentById = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "aparments" WHERE id_aparment = $1`,
+      `SELECT * FROM "apartments" WHERE id_aparment = $1`,
       [req.params.id]
     );
-    const user = result.rows[0];
-    if (user) {
-      res.json(user);
+    const aparment = result.rows[0];
+    if (aparment) {
+      res.json(aparment);
     } else {
       res.status(404).json({ message: 'Departamento no encontrado' });
     }
@@ -28,11 +28,28 @@ export const getAparmentById = async (req: Request, res: Response) => {
   }
 };
 
+export const getAparmentByUser = async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM "apartments" WHERE firebase_id = $1`,
+      [req.params.id]
+    );
+    const aparments = result.rows;
+    if (aparments) {
+      res.json(aparments);
+    } else {
+      res.status(404).json({ message: 'Departamentos no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error al recuperar departamentos' });
+  }
+};
+
 export const createAparment = async (req: Request, res: Response) => {
   try {
     const { firebase_id, adress, description, building, m2, cod, floor } =
       req.body;
-    const query = `INSERT INTO "aparments" (firebase_id, adress, description, building, m2, cod, floor) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+    const query = `INSERT INTO "apartments" (firebase_id, adress, description, building, m2, cod, floor) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
     const result = await pool.query(query, [
       firebase_id,
       adress,
@@ -53,7 +70,7 @@ export const createAparment = async (req: Request, res: Response) => {
 export const updateAparment = async (req: Request, res: Response) => {
   try {
     const { adress, description, building, m2, cod, floor } = req.body;
-    const query = `UPDATE "aparments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6 WHERE firebase_id = $7 RETURNING *`;
+    const query = `UPDATE "apartments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6 WHERE firebase_id = $7 RETURNING *`;
     const result = await pool.query(query, [
       adress,
       description,
@@ -78,7 +95,7 @@ export const updateAparment = async (req: Request, res: Response) => {
 export const deleteAparment = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `DELETE FROM "aparments" WHERE firebase_id = $1 RETURNING *`,
+      `DELETE FROM "apartments" WHERE firebase_id = $1 RETURNING *`,
       [req.params.id]
     );
     const deletedAparment = result.rows[0];
