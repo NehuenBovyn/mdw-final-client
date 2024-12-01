@@ -14,7 +14,7 @@ export const getAllAparments = async (req: Request, res: Response) => {
 export const getAparmentById = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "aparments" WHERE firebase_id = $1`,
+      `SELECT * FROM "aparments" WHERE id_aparment = $1`,
       [req.params.id]
     );
     const user = result.rows[0];
