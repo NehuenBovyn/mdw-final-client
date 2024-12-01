@@ -3,7 +3,9 @@ const pool = require('../services/dbService');
 
 export const getAllAparments = async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(`SELECT * FROM "apartments"`);
+    const result = await pool.query(
+      `SELECT * FROM "apartments" JOIN "users" ON apartments.firebase_id = users.firebase_id`
+    );
     res.json(result.rows);
   } catch (error) {
     console.log(error);
@@ -14,7 +16,7 @@ export const getAllAparments = async (req: Request, res: Response) => {
 export const getAparmentById = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "apartments" WHERE id_aparment = $1`,
+      `SELECT * FROM "apartments" JOIN "users" ON apartments.firebase_id = users.firebase_id WHERE apartments.id_apartment = $1`,
       [req.params.id]
     );
     const aparment = result.rows[0];
@@ -31,7 +33,7 @@ export const getAparmentById = async (req: Request, res: Response) => {
 export const getAparmentByUser = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "apartments" WHERE firebase_id = $1`,
+      `SELECT * FROM "apartments" JOIN "users" ON apartments.firebase_id = users.firebase_id WHERE apartments.firebase_id = $1`,
       [req.params.id]
     );
     const aparments = result.rows;
