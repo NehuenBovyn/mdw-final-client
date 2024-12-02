@@ -8,7 +8,7 @@ export const getAllAparments = async (req: Request, res: Response) => {
     );
     res.json(result.rows);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: 'Error al recuperar departamento' });
   }
 };
@@ -65,7 +65,7 @@ export const createAparment = async (req: Request, res: Response) => {
     const newAparment = result;
     res.status(201).json({ message: newAparment });
   } catch (error) {
-    console.log(error, 'error');
+    console.error(error, 'error');
     res.status(500).json({ message: 'Error al crear departamento' });
   }
 };

@@ -6,7 +6,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const result = await pool.query(`SELECT * FROM "users"`);
     res.json(result.rows);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: 'Error al recuperar usuarios' });
   }
 };
@@ -36,7 +36,7 @@ export const createUser = async (req: Request, res: Response) => {
     const newUser = result;
     res.status(201).json({ message: newUser });
   } catch (error) {
-    console.log(error, 'error');
+    console.error(error, 'error');
     res.status(500).json({ message: 'Error al crear usuario' });
   }
 };
@@ -68,7 +68,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     );
     const deletedUser = result.rows[0];
     if (deletedUser) {
-      res.status(204).end(); // Sin contenido
+      res.status(204).end();
     } else {
       res.status(404).json({ message: 'Usuario no encontrado' });
     }
