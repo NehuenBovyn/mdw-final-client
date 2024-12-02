@@ -4,7 +4,7 @@ const pool = require('../services/dbService');
 export const getAllAparments = async (req: Request, res: Response) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "apartments" JOIN "users" ON apartments.firebase_id = users.firebase_id`
+      `SELECT * FROM "apartments" JOIN "users" ON apartments.firebase_id = users.firebase_id WHERE free = true`
     );
     res.json(result.rows);
   } catch (error) {
@@ -49,9 +49,9 @@ export const getAparmentByUser = async (req: Request, res: Response) => {
 
 export const createAparment = async (req: Request, res: Response) => {
   try {
-    const { firebase_id, adress, description, building, m2, cod, floor } =
+    const { firebase_id, adress, description, building, m2, cod, floor, free } =
       req.body;
-    const query = `INSERT INTO "apartments" (firebase_id, adress, description, building, m2, cod, floor) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+    const query = `INSERT INTO "apartments" (firebase_id, adress, description, building, m2, cod, floor, free) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
     const result = await pool.query(query, [
       firebase_id,
       adress,
@@ -60,6 +60,7 @@ export const createAparment = async (req: Request, res: Response) => {
       m2,
       cod,
       floor,
+      free,
     ]);
     const newAparment = result;
     res.status(201).json({ message: newAparment });
@@ -71,8 +72,8 @@ export const createAparment = async (req: Request, res: Response) => {
 
 export const updateAparment = async (req: Request, res: Response) => {
   try {
-    const { adress, description, building, m2, cod, floor } = req.body;
-    const query = `UPDATE "apartments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6 WHERE firebase_id = $7 RETURNING *`;
+    const { adress, description, building, m2, cod, floor, free } = req.body;
+    const query = `UPDATE "apartments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6, free = $7 WHERE firebase_id = $8 RETURNING *`;
     const result = await pool.query(query, [
       adress,
       description,
@@ -80,6 +81,7 @@ export const updateAparment = async (req: Request, res: Response) => {
       m2,
       cod,
       floor,
+      free,
       req.params.id,
     ]);
 
