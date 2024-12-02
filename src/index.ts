@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: 'https://mdw-final-8qzahnofm-nehuenbovyns-projects.vercel.app',
+    origin: 'https://mdw-final.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
