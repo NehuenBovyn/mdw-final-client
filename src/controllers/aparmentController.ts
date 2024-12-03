@@ -73,7 +73,7 @@ export const createAparment = async (req: Request, res: Response) => {
 export const updateAparment = async (req: Request, res: Response) => {
   try {
     const { adress, description, building, m2, cod, floor, free } = req.body;
-    const query = `UPDATE "apartments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6, free = $7 WHERE firebase_id = $8 RETURNING *`;
+    const query = `UPDATE "apartments" SET adress = $1, description = $2, building = $3, m2 = $4, cod = $5, floor = $6, free = $7 WHERE id_apartment = $8 RETURNING *`;
     const result = await pool.query(query, [
       adress,
       description,
